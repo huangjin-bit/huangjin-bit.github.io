@@ -9,7 +9,7 @@
   </head>
   <body>
     <h1>Mozilla is cool</h1>
-    <img src="images/4ace4d274c9202d8e25aef5febc559b6.jpg" alt="My test image" />
+    <img src="test-site/images/4ace4d274c9202d8e25aef5febc559b6.jpg" alt="My test image" />
     <button>Change user</button>
     <a href="https://www.mozilla.org/zh-CN/about/manifesto/">Mozilla Manifesto</a>
     <p>At Mozilla, we’re a global community of</p>
@@ -22,6 +22,6 @@
       We believe this act of human collaboration across an open platform is essential to individual growth and our collective future.</p>
     <p>Read the <a href="https://www.mozilla.org/en-US/about/manifesto/">Mozilla Manifesto</a> 
       to learn even more about the values and principles that guide the pursuit of our mission.</p>
-    <script src="scripts/main.js"></script>
+    <script src="test-site/scripts/main.js"></script>
   </body>
 </html>
