@@ -94,13 +94,51 @@
 </head>
 <body class="min-h-screen overflow-x-hidden font-anime text-white relative" style="background-image: url('images/firefox2.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <!-- 星空背景容器 -->
-    <div id="starfield" class="fixed inset-0 bg-stars opacity-20 z-0"></div>
+    <canvas id="starfield" class="fixed inset-0 z-0" style="pointer-events:none;"></canvas>
     
     <!-- 半透明遮罩 -->
-    <div class="fixed inset-0 bg-gradient-to-b from-dark/40 to-dark/60 z-10"></div>
+    <div class="fixed inset-0 bg-gradient-to-b from-dark/20 to-dark/40 z-10"></div>
     
     <!-- 主内容 -->
-    <div class="relative z-20 min-h-screen flex flex-col">
+        <div class="relative z-20 min-h-screen flex flex-col">
+        <!-- ...existing code... -->
+        <script>
+        // 星空动态背景效果
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let w, h;
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        const stars = Array.from({length: 120}, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            r: Math.random() * 1.2 + 0.5,
+            speed: Math.random() * 0.2 + 0.05
+        }));
+        function drawStars() {
+            ctx.clearRect(0, 0, w, h);
+            for (const star of stars) {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                ctx.shadowColor = '#fff';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                star.y += star.speed;
+                if (star.y > h) {
+                    star.y = 0;
+                    star.x = Math.random() * w;
+                }
+            }
+            ctx.shadowBlur = 0;
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+        </script>
         <!-- 顶部导航 -->
         <header class="w-full py-5 px-4 md:px-8">
             <div class="container mx-auto flex justify-between items-center">
