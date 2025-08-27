@@ -3,700 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java后端程序员的二次元星空</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    <title>Java后端开发者 | 动漫星空主页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        star: '#C8E6C9',       // 星光绿
+                        meteor: '#FFCDD2',     // 流星粉
+                        dark: '#0A0E17',       // 深空黑
+                        accent: '#81D4FA',     // 亮蓝
+                        java: '#FFC107',       // Java橙
+                    },
+                    fontFamily: {
+                        anime: ['"Noto Sans SC"', 'sans-serif'],
+                    },
+                }
+            }
         }
-        
-        body {
-            font-family: 'ZCOOL QingKe HuangYou', cursive, sans-serif;
-            background: linear-gradient(135deg, #0a0a2a, #1a1a40, #0a0a2a);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(129, 212, 250, 0.7);
+            }
+            .border-glow {
+                box-shadow: 0 0 15px rgba(129, 212, 250, 0.6);
+            }
+            .bg-stars {
+                background-image: 
+                    radial-gradient(circle, #C8E6C9 1px, transparent 1px),
+                    radial-gradient(circle, #C8E6C9 1px, transparent 1px);
+                background-size: 50px 50px;
+                background-position: 0 0, 25px 25px;
+            }
         }
-        
-        /* 星空背景效果 */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -3;
-        }
-        
+
+        /* 星空和流星动画 */
         .star {
             position: absolute;
-            background-color: #fff;
+            background-color: #C8E6C9;
             border-radius: 50%;
-            animation: twinkle 5s infinite ease-in-out;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+        
+        .meteor {
+            position: absolute;
+            width: 1px;
+            background: linear-gradient(45deg, #FFCDD2, rgba(255, 205, 210, 0));
+            transform-origin: top left;
+            animation: meteor-fall 5s linear forwards;
         }
         
         @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
+            0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
         }
         
-        /* 银河辉光效果 */
-        .galaxy-glow {
-            position: fixed;
-            top: 50%;
-            left: 30%;
-            width: 1000px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(106, 69, 226, 0.2) 0%, rgba(26, 26, 64, 0) 70%);
-            filter: blur(40px);
-            z-index: -2;
-            transform: translate(-50%, -50%);
-        }
-        
-        /* 行星效果 */
-        .planet {
-            position: fixed;
-            border-radius: 50%;
-            z-index: -2;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-            animation: orbit linear infinite;
-        }
-        
-        .planet-1 {
-            width: 120px;
-            height: 120px;
-            top: 15%;
-            left: 15%;
-            background: radial-gradient(circle at 30% 30%, #ff9a3c, #ff6b6b);
-            animation-duration: 120s;
-        }
-        
-        .planet-2 {
-            width: 80px;
-            height: 80px;
-            top: 70%;
-            right: 15%;
-            background: radial-gradient(circle at 30% 30%, #5fa8f7, #1e40af);
-            animation-duration: 100s;
-        }
-        
-        .planet-3 {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 25%;
-            background: radial-gradient(circle at 30% 30%, #a78bfa, #7c3aed);
-            animation-duration: 80s;
-        }
-        
-        @keyframes orbit {
-            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
-        }
-        
-        /* 流星效果 */
-        .meteor {
-            position: absolute;
-            top: -50px;
-            width: 2px;
-            height: 50px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
-            animation: meteor 3s linear infinite;
-            opacity: 0;
-        }
-        
-        @keyframes meteor {
-            0% {
-                opacity: 0;
-                transform: rotate(-45deg) translateY(0) translateX(0);
-            }
-            10% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: rotate(-45deg) translateY(1000px) translateX(-1000px);
-            }
-        }
-        
-        /* 主要内容区域 */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            z-index: 1;
-            position: relative;
-        }
-        
-        header {
-            text-align: center;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-        
-        .avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 5px solid #6e45e2;
-            box-shadow: 0 0 25px #6e45e2;
-            margin: 0 auto;
-            overflow: hidden;
-            background: linear-gradient(45deg, #9c27b0, #673ab7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        h1 {
-            font-family: 'Ma Shan Zheng', cursive, sans-serif;
-            font-size: 3.5rem;
-            margin: 1.5rem 0;
-            color: #ff6ec7;
-            text-shadow: 0 0 15px #ff6ec7;
-            letter-spacing: 2px;
-        }
-        
-        .tagline {
-            font-size: 1.8rem;
-            color: #9cecfb;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px #9cecfb;
-        }
-        
-        .java-badge {
-            display: inline-block;
-            background: rgba(255, 111, 97, 0.2);
-            color: #ff6f61;
-            padding: 0.5rem 1.5rem;
-            border-radius: 30px;
-            border: 2px solid #ff6f61;
-            margin-top: 1rem;
-            font-size: 1.2rem;
-        }
-        
-        /* 导航菜单 */
-        nav {
-            display: flex;
-            justify-content: center;
-            margin: 2.5rem 0;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .nav-btn {
-            background: rgba(106, 69, 226, 0.3);
-            color: #fff;
-            border: 2px solid #6e45e2;
-            border-radius: 30px;
-            padding: 1rem 2rem;
-            margin: 0.8rem;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .nav-btn:hover {
-            background: rgba(106, 69, 226, 0.6);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(106, 69, 226, 0.6);
-        }
-        
-        .nav-btn:before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(45deg, #ff6ec7, #6e45e2, #9cecfb, #6e45e2);
-            z-index: -1;
-            border-radius: 35px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .nav-btn:hover:before {
-            opacity: 0.3;
-        }
-        
-        /* 内容卡片 */
-        .card {
-            background: rgba(26, 26, 64, 0.6);
-            border: 2px solid #6e45e2;
-            border-radius: 20px;
-            padding: 2.5rem;
-            margin: 3rem 0;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(110, 69, 226, 0.5);
-        }
-        
-        .card:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(to right, #ff6ec7, #6e45e2, #9cecfb);
-            border-radius: 20px 20px 0 0;
-        }
-        
-        h2 {
-            color: #6e45e2;
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #6e45e2;
-            text-shadow: 0 0 8px #6e45e2;
-        }
-        
-        h3 {
-            color: #9cecfb;
-            margin: 1.5rem 0 0.8rem;
-            font-size: 1.5rem;
-        }
-        
-        p {
-            line-height: 1.8;
-            margin-bottom: 1.2rem;
-            color: #d6d6f0;
-            font-size: 1.1rem;
-        }
-        
-        ul {
-            list-style-type: none;
-            padding-left: 2rem;
-        }
-        
-        li {
-            margin-bottom: 1rem;
-            position: relative;
-            font-size: 1.1rem;
-        }
-        
-        li:before {
-            content: "✦";
-            color: #ff6ec7;
-            position: absolute;
-            left: -2rem;
-            text-shadow: 0 0 8px #ff6ec7;
-        }
-        
-        /* 技能展示 */
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            margin-top: 2rem;
-        }
-        
-        .skill {
-            background: rgba(106, 69, 226, 0.3);
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            border: 1px solid #6e45e2;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .skill:hover {
-            background: rgba(106, 69, 226, 0.6);
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(110, 69, 226, 0.7);
-        }
-        
-        .java-skill {
-            background: rgba(255, 111, 97, 0.3);
-            border: 1px solid #ff6f61;
-        }
-        
-        /* 项目展示 */
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2.5rem;
-            margin-top: 2.5rem;
-        }
-        
-        .project {
-            background: rgba(26, 26, 64, 0.7);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid #6e45e2;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .project:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(110, 69, 226, 0.5);
-        }
-        
-        .project:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, #ff6ec7, #6e45e2);
-        }
-        
-        /* 动漫美少女装饰 */
-        .anime-character {
-            position: absolute;
-            z-index: 0;
-            opacity: 0.7;
-            filter: brightness(1.2);
-            transition: all 3s ease-in-out;
-            animation: float 6s infinite ease-in-out;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 110, 199, 0.5);
-            max-width: 200px;
+        @keyframes meteor-fall {
+            0% { transform: translate(-50px, -50px) rotate(45deg) scale(0); opacity: 1; }
+            100% { transform: translate(calc(100vw + 100px), calc(100vh + 100px)) rotate(45deg) scale(1); opacity: 0; }
         }
         
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
         
-        .char-1 {
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
         }
         
-        .char-2 {
-            top: 40%;
-            right: 5%;
-            animation-delay: 2s;
-        }
-        
-        .char-3 {
-            bottom: 10%;
-            left: 8%;
-            animation-delay: 4s;
-        }
-        
-        .char-4 {
-            top: 15%;
-            right: 10%;
-            animation-delay: 1s;
-        }
-        
-        .char-5 {
-            bottom: 20%;
-            right: 15%;
-            animation-delay: 3s;
-        }
-        
-        /* 页脚 */
-        footer {
-            text-align: center;
-            padding: 3rem 0;
-            margin-top: 4rem;
-            border-top: 1px solid #6e45e2;
-            color: #9cecfb;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-        
-        .social-link {
-            color: #ff6ec7;
-            font-size: 2.2rem;
+        .card-hover {
             transition: all 0.3s ease;
-            text-shadow: 0 0 10px #ff6ec7;
         }
         
-        .social-link:hover {
-            transform: scale(1.3) rotate(10deg);
-            color: #9cecfb;
-            text-shadow: 0 0 15px #9cecfb;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 968px) {
-            .anime-character {
-                max-width: 150px;
-            }
-            
-            h1 {
-                font-size: 2.8rem;
-            }
-            
-            .tagline {
-                font-size: 1.5rem;
-            }
-            
-            .planet {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .anime-character {
-                max-width: 120px;
-            }
-            
-            .projects {
-                grid-template-columns: 1fr;
-            }
-            
-            .card {
-                padding: 2rem 1.5rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .tagline {
-                font-size: 1.3rem;
-            }
-            
-            h2 {
-                font-size: 2rem;
-            }
-            
-            .nav-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-            
-            .char-2, .char-4, .char-5 {
-                display: none;
-            }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(129, 212, 250, 0.2);
         }
     </style>
 </head>
-<body>
-    <!-- 星空背景 -->
-    <div class="stars" id="stars"></div>
+<body class="min-h-screen overflow-x-hidden font-anime bg-dark text-white relative">
+    <!-- 星空背景容器 -->
+    <div id="starfield" class="fixed inset-0 bg-stars opacity-20 z-0"></div>
     
-    <!-- 银河辉光 -->
-    <div class="galaxy-glow"></div>
+    <!-- 半透明遮罩 -->
+    <div class="fixed inset-0 bg-gradient-to-b from-dark/80 to-dark z-10"></div>
     
-    <!-- 行星 -->
-    <div class="planet planet-1"></div>
-    <div class="planet planet-2"></div>
-    <div class="planet planet-3"></div>
-    
-    <!-- 流星 -->
-    <div class="meteors-container"></div>
-    
-    <!-- 动漫美少女装饰 -->
-    <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/svg/loader/orange.progress-bar-stripe-loader.svg" class="anime-character char-1" alt="Anime character">
-    <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/svg/loader/green.progress-bar-stripe-loader.svg" class="anime-character char-2" alt="Anime character">
-    <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/svg/loader/blue.progress-bar-stripe-loader.svg" class="anime-character char-3" alt="Anime character">
-    <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/svg/loader/yellow.progress-bar-stripe-loader.svg" class="anime-character char-4" alt="Anime character">
-    <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/svg/loader/pink.progress-bar-stripe-loader.svg" class="anime-character char-5" alt="Anime character">
-    
-    <div class="container">
-        <header>
-            <div class="avatar">
-                <img src="https://cdn.jsdelivr.net/gh/moezx/cdn@3.7.9/img/other/avatar.jpg" alt="Anime Avatar">
-            </div>
-            <h1>Java后端程序员的二次元星空</h1>
-            <p class="tagline">代码如诗，编织星辰大海</p>
-            <div class="java-badge">
-                <i class="fab fa-java"></i> Java后端开发者
+    <!-- 主内容 -->
+    <div class="relative z-20 min-h-screen flex flex-col">
+        <!-- 顶部导航 -->
+        <header class="w-full py-5 px-4 md:px-8">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl md:text-3xl font-bold text-star flex items-center">
+                    <i class="fa fa-code text-java mr-2"></i>Java开发者
+                </h1>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com" target="_blank" class="text-star/80 hover:text-star transition-colors">
+                        <i class="fa fa-github text-xl"></i>
+                    </a>
+                    <a href="mailto:your.email@example.com" class="text-star/80 hover:text-star transition-colors">
+                        <i class="fa fa-envelope text-xl"></i>
+                    </a>
+                </div>
             </div>
         </header>
         
-        <nav>
-            <button class="nav-btn" onclick="scrollToSection('about')">关于我</button>
-            <button class="nav-btn" onclick="scrollToSection('skills')">技术栈</button>
-            <button class="nav-btn" onclick="scrollToSection('projects')">项目展示</button>
-            <button class="nav-btn" onclick="scrollToSection('github-pages')">GitHub Pages</button>
-            <button class="nav-btn" onclick="scrollToSection('contact')">联系我</button>
-        </nav>
-        
-        <section class="card" id="about">
-            <h2>关于我</h2>
-            <p>嗨！我是一名专注于Java后端开发的程序员，热爱构建高效、可靠的服务器端应用。拥有多年Spring Boot和微服务架构经验，擅长构建高并发、高可用的分布式系统。</p>
-            <p>在我的GitHub Pages中，你会找到我的技术博客、项目展示和一些有趣的实验性项目。这个页面采用了我喜爱的动漫二次元和星空风格，希望能给你带来愉悦的浏览体验。</p>
-            <p>当不沉浸在代码世界中时，我喜欢欣赏动漫、阅读科幻小说，以及在夜晚仰望星空寻找灵感。</p>
-        </section>
-        
-        <section class="card" id="skills">
-            <h2>技术栈</h2>
-            <p>作为一名Java后端开发者，我主要使用以下技术：</p>
-            <div class="skills">
-                <span class="skill java-skill">Java</span>
-                <span class="skill java-skill">Spring Boot</span>
-                <span class="skill java-skill">Spring Cloud</span>
-                <span class="skill">MySQL</span>
-                <span class="skill">PostgreSQL</span>
-                <span class="skill">Redis</span>
-                <span class="skill">MongoDB</span>
-                <span class="skill">Docker</span>
-                <span class="skill">Kubernetes</span>
-                <span class="skill">AWS</span>
-                <span class="skill">Git</span>
-                <span class="skill">RESTful APIs</span>
-                <span class="skill">Microservices</span>
-                <span class="skill">Maven</span>
-                <span class="skill">Gradle</span>
-                <span class="skill">Linux</span>
+        <!-- 主要内容区 -->
+        <main class="flex-grow flex flex-col md:flex-row items-center justify-center px-4 py-12 md:py-20 gap-8 md:gap-16">
+            <!-- 动漫头像 -->
+            <div class="w-52 h-52 md:w-64 md:h-64 relative float-animation">
+                <div class="absolute inset-0 rounded-full bg-accent/20 border-glow animate-pulse"></div>
+                <img src="images\4ace4d274c9202d8e25aef5febc559b6.jpg" 
+                     alt="动漫风格头像" 
+                     class="w-full h-full rounded-full object-cover border-4 border-star relative z-10">
             </div>
-        </section>
-        
-        <section class="card" id="projects">
-            <h2>项目展示</h2>
-            <p>以下是我在GitHub上的一些代表性Java项目：</p>
-            <div class="projects">
-                <div class="project">
-                    <h3>分布式电商平台</h3>
-                    <p>基于Spring Cloud的微服务电商系统，包含商品、订单、支付、用户等模块，使用Redis缓存和RabbitMQ消息队列。</p>
+            
+            <!-- 个人介绍 -->
+            <div class="max-w-2xl w-full space-y-6">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-3">
+                        你好，我是<span class="text-meteor">Java后端开发者</span>
+                    </h2>
+                    <p class="text-accent text-shadow text-lg">代码构建世界 · 动漫点缀生活</p>
                 </div>
-                <div class="project">
-                    <h3>API网关服务</h3>
-                    <p>使用Spring Cloud Gateway构建的高性能API网关，提供路由、认证、限流和监控等功能。</p>
+                
+                <p class="text-gray-300 leading-relaxed">
+                    专注Java后端开发，擅长使用Spring生态构建高可用、高性能的企业级应用。
+                    热衷于解决复杂业务问题和性能优化，同时也是一名资深动漫爱好者，
+                    喜欢在代码的逻辑世界和动漫的幻想世界中穿梭。
+                </p>
+                
+                <!-- 技能卡片 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-star flex items-center">
+                        <i class="fa fa-cogs mr-2 text-java"></i>技术栈
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="bg-dark/60 border border-accent/30 rounded-lg p-3 card-hover">
+                            <div class="font-bold text-java">Java</div>
+                            <div class="text-sm text-gray-400">JDK 8/11/17</div>
+                        </div>
+                        <div class="bg-dark/60 border border-accent/30 rounded-lg p-3 card-hover">
+                            <div class="font-bold text-java">Spring</div>
+                            <div class="text-sm text-gray-400">Boot, Cloud</div>
+                        </div>
+                        <div class="bg-dark/60 border border-accent/30 rounded-lg p-3 card-hover">
+                            <div class="font-bold text-java">数据库</div>
+                            <div class="text-sm text-gray-400">MySQL, Redis</div>
+                        </div>
+                        <div class="bg-dark/60 border border-accent/30 rounded-lg p-3 card-hover">
+                            <div class="font-bold text-java">中间件</div>
+                            <div class="text-sm text-gray-400">RabbitMQ, Kafka</div>
+                        </div>
+                        <div class="bg-dark/60 border border-accent/30 rounded-lg p-3 card-hover">
+                            <div class="font-bold text-java">DevOps</div>
+                            <div class="text-sm text-gray-400">Docker, Git</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="project">
-                    <h3>任务调度平台</h3>
-                    <p>基于Quartz和Spring Boot的分布式任务调度系统，支持动态添加任务和监控执行状态。</p>
+                
+                <!-- 项目经验 -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-star flex items-center">
+                        <i class="fa fa-briefcase mr-2 text-java"></i>项目经验
+                    </h3>
+                    <div class="bg-dark/60 border border-accent/30 rounded-lg p-4 card-hover">
+                        <div class="font-bold text-accent mb-1">电商订单系统重构</div>
+                        <p class="text-sm text-gray-300">
+                            使用Spring Cloud微服务架构重构传统单体系统，
+                            支持日均10万+订单处理，系统可用性提升至99.9%。
+                        </p>
+                    </div>
+                    <div class="bg-dark/60 border border-accent/30 rounded-lg p-4 mt-3 card-hover">
+                        <div class="font-bold text-accent mb-1">分布式任务调度平台</div>
+                        <p class="text-sm text-gray-300">
+                            设计实现基于Quartz的分布式任务调度平台，
+                            支持动态任务管理和监控，服务于10+业务线。
+                        </p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </main>
         
-        <section class="card" id="github-pages">
-            <h2>关于GitHub Pages</h2>
-            <p>GitHub Pages是GitHub提供的一个静态网站托管服务，可以直接从GitHub仓库托管个人、项目或组织的页面。</p>
-            
-            <h3>主要优点：</h3>
-            <ul>
-                <li>完全免费使用</li>
-                <li>与GitHub无缝集成，支持自动部署</li>
-                <li>支持自定义域名</li>
-                <li>自动使用SSL加密，保障访问安全</li>
-                <li>简单易用，适合技术博客和项目展示</li>
-            </ul>
-            
-            <h3>使用方式：</h3>
-            <p>1. 创建一个新的GitHub仓库，命名为<code>username.github.io</code></p>
-            <p>2. 将你的HTML、CSS和JavaScript文件添加到仓库中</p>
-            <p>3. 通过访问<code>https://username.github.io</code>查看你的网站</p>
-            
-            <p>作为Java后端开发者，GitHub Pages是展示项目和技术博客的理想平台，无需担心服务器配置和维护问题。</p>
-        </section>
-        
-        <section class="card" id="contact">
-            <h2>联系我</h2>
-            <p>如果你对我的项目感兴趣，或者想与我交流Java后端技术，欢迎通过以下方式联系我：</p>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-weibo"></i></a>
+        <!-- 页脚 -->
+        <footer class="w-full py-6 px-4 border-t border-accent/20 mt-12">
+            <div class="container mx-auto text-center text-gray-400 text-sm">
+                <p>© 2023 Java后端开发者 | 动漫星空主题</p>
+                <p class="mt-2">用代码创造价值，用热爱点亮生活</p>
             </div>
-        </section>
-        
-        <footer>
-            <p>✨ 感谢访问我的GitHub Pages ✨</p>
-            <p><i class="fab fa-java"></i> Java后端开发者的星空梦想 | 2023</p>
         </footer>
     </div>
-
+    
+    <!-- 星空和流星效果脚本 -->
     <script>
-        // 创建星星背景
+        // 生成随机星星
         function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const starsCount = 300;
+            const starfield = document.getElementById('starfield');
+            const starCount = 150;
             
-            for (let i = 0; i < starsCount; i++) {
+            for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.classList.add('star');
                 
-                const size = Math.random() * 4;
+                // 随机属性
+                const size = Math.random() * 2 + 1;
+                const top = Math.random() * 100;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 5;
+                
                 star.style.width = `${size}px`;
                 star.style.height = `${size}px`;
+                star.style.top = `${top}%`;
+                star.style.left = `${left}%`;
+                star.style.animationDelay = `${delay}s`;
                 
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 5}s`;
-                
-                starsContainer.appendChild(star);
+                starfield.appendChild(star);
             }
         }
         
-        // 创建流星效果
-        function createMeteors() {
-            const meteorsContainer = document.querySelector('.meteors-container');
-            const meteorCount = 15;
+        // 生成流星
+        function createMeteor() {
+            const starfield = document.getElementById('starfield');
+            const meteor = document.createElement('div');
+            meteor.classList.add('meteor');
             
-            for (let i = 0; i < meteorCount; i++) {
-                const meteor = document.createElement('div');
-                meteor.classList.add('meteor');
-                
-                meteor.style.left = `${Math.random() * 100}%`;
-                meteor.style.top = `${Math.random() * 100}%`;
-                meteor.style.animationDelay = `${Math.random() * 8}s`;
-                
-                meteorsContainer.appendChild(meteor);
-            }
-        }
-        
-        // 添加动漫角色闪烁效果
-        function animateCharacters() {
-            const characters = document.querySelectorAll('.anime-character');
+            // 随机属性
+            const length = Math.random() * 100 + 50;
+            const top = Math.random() * 30;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 3 + 2;
             
-            characters.forEach(char => {
-                setInterval(() => {
-                    const opacity = 0.5 + Math.random() * 0.5;
-                    char.style.opacity = opacity;
-                }, 2000);
-            });
+            meteor.style.height = `${length}px`;
+            meteor.style.top = `${top}%`;
+            meteor.style.left = `${left}%`;
+            meteor.style.animationDuration = `${duration}s`;
+            
+            starfield.appendChild(meteor);
+            
+            // 动画结束后移除流星
+            setTimeout(() => {
+                meteor.remove();
+            }, duration * 1000);
+            
+            // 定时生成下一颗流星
+            setTimeout(createMeteor, Math.random() * 5000 + 3000);
         }
         
-        // 平滑滚动到指定区域
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-        
-        // 初始化
-        window.onload = function() {
+        // 页面加载完成后初始化
+        window.addEventListener('load', () => {
             createStars();
-            createMeteors();
-            animateCharacters();
-        };
+            createMeteor();
+        });
     </script>
 </body>
 </html>
+    
