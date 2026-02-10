@@ -1,0 +1,118 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  href: string;
+  features: string[];
+}
+
+const { title, description, icon, color, href, features } = Astro.props;
+---
+
+<a href={href} class="category-card" style={`--cat-color: ${color}`}>
+  <div class="category-icon"><Icon name={icon} size={36} color={color} /></div>
+  <h3 class="category-title">{title}</h3>
+  <p class="category-desc">{description}</p>
+  <ul class="category-features">
+    {features.map((f) => (
+      <li>{f}</li>
+    ))}
+  </ul>
+  <span class="category-arrow"><Icon name="arrow-right" size={18} color={color} /></span>
+</a>
+
+<style>
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    transition: var(--transition-normal);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--cat-color);
+    opacity: 0;
+    transition: var(--transition-normal);
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--cat-color);
+    box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4), 0 0 25px color-mix(in srgb, var(--cat-color) 15%, transparent);
+  }
+
+  .category-card:hover::before {
+    opacity: 1;
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .category-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+    color: var(--cat-color);
+  }
+
+  .category-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    line-height: 1.6;
+  }
+
+  .category-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: var(--space-md);
+    flex: 1;
+  }
+
+  .category-features li {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .category-features li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cat-color);
+  }
+
+  .category-arrow {
+    font-size: 1.2rem;
+    color: var(--cat-color);
+    transition: var(--transition-normal);
+    align-self: flex-end;
+  }
+
+  .category-card:hover .category-arrow {
+    transform: translateX(5px);
+  }
+</style>

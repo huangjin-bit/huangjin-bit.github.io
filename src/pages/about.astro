@@ -1,0 +1,296 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="关于" description="关于星辰代码博客和博主">
+  <div class="about-page container-narrow">
+    <div class="about-header">
+      <div class="avatar-wrapper">
+        <div class="avatar">
+          <span class="avatar-icon"><Icon name="code" size={48} color="#fff" /></span>
+        </div>
+        <div class="avatar-glow"></div>
+      </div>
+      <h1 class="about-title">关于星辰代码</h1>
+      <p class="about-subtitle">后端开发者 · 数据科学探索者 · AI宇宙航行员</p>
+    </div>
+
+    <div class="about-content">
+      <section class="about-section">
+        <h2><Icon name="sparkles" size={22} color="var(--color-accent-primary)" /> 你好</h2>
+        <p>
+          欢迎来到<strong>星辰代码</strong>，这是一个向宇宙深处探索技术边界的个人博客。
+          我是一名热爱技术的开发者，专注于后端开发、数据科学与人工智能领域。
+        </p>
+        <p>
+          在这里，我会记录每一次技术探索的航行日志。
+          每一篇文章都是一次深入未知星域的旅程。
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2><Icon name="cpu" size={22} color="var(--color-accent-primary)" /> 技术栈</h2>
+        <div class="tech-grid">
+          <div class="tech-card">
+            <h3><Icon name="server" size={18} color="var(--color-backend)" /> 后端开发</h3>
+            <div class="tech-tags">
+              <span class="tech-tag">Java / Spring Boot</span>
+              <span class="tech-tag">Python / FastAPI</span>
+              <span class="tech-tag">Go</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Redis</span>
+              <span class="tech-tag">Docker</span>
+              <span class="tech-tag">Kubernetes</span>
+            </div>
+          </div>
+          <div class="tech-card">
+            <h3><Icon name="bar-chart" size={18} color="var(--color-data-science)" /> 数据科学</h3>
+            <div class="tech-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Pandas</span>
+              <span class="tech-tag">NumPy</span>
+              <span class="tech-tag">Scikit-learn</span>
+              <span class="tech-tag">Matplotlib</span>
+              <span class="tech-tag">SQL</span>
+              <span class="tech-tag">Spark</span>
+            </div>
+          </div>
+          <div class="tech-card">
+            <h3><Icon name="brain" size={18} color="var(--color-ai)" /> 人工智能</h3>
+            <div class="tech-tags">
+              <span class="tech-tag">PyTorch</span>
+              <span class="tech-tag">TensorFlow</span>
+              <span class="tech-tag">Transformers</span>
+              <span class="tech-tag">LangChain</span>
+              <span class="tech-tag">OpenAI API</span>
+              <span class="tech-tag">MLflow</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section">
+        <h2><Icon name="target" size={22} color="var(--color-accent-primary)" /> 博客理念</h2>
+        <div class="philosophy-grid">
+          <div class="philosophy-item">
+            <span class="phi-icon"><Icon name="book-open" size={28} color="var(--color-accent-primary)" /></span>
+            <h4>深入未知</h4>
+            <p>每篇文章都力求深入浅出，不仅讲述“怎么做”，更探讨“为什么”。</p>
+          </div>
+          <div class="philosophy-item">
+            <span class="phi-icon"><Icon name="microscope" size={28} color="var(--color-accent-primary)" /></span>
+            <h4>实践驱动</h4>
+            <p>所有内容都来自真实项目经验，每一次实践都是一次星际远征。</p>
+          </div>
+          <div class="philosophy-item">
+            <span class="phi-icon"><Icon name="flower" size={28} color="var(--color-accent-primary)" /></span>
+            <h4>宇宙美学</h4>
+            <p>技术与宇宙美学融合，用星空的深邃与未知的神秘点缀每一篇文章。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section">
+        <h2><Icon name="mail" size={22} color="var(--color-accent-primary)" /> 联系方式</h2>
+        <p>如果你有任何问题、建议或合作意向，欢迎通过以下方式联系我：</p>
+        <div class="contact-links">
+          <a href="https://github.com/huangjin-bit" class="contact-link" target="_blank" rel="noopener noreferrer">
+            <Icon name="github" size={18} /> GitHub
+          </a>
+          <a href="mailto:your@email.com" class="contact-link">
+            <Icon name="mail" size={18} /> Email
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page {
+    padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+    position: relative;
+    z-index: 1;
+  }
+
+  .about-header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: var(--space-lg);
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .avatar-icon {
+    font-size: 3rem;
+    color: #fff;
+  }
+
+  .avatar-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    opacity: 0.3;
+    filter: blur(20px);
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  .about-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-sm);
+  }
+
+  .about-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  .about-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .about-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .about-section p {
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+
+  .about-section strong {
+    color: var(--color-accent-primary);
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .tech-card {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+
+  .tech-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tech-tag {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: rgba(110, 142, 251, 0.08);
+    color: var(--color-accent-primary);
+    border: 1px solid var(--color-border);
+  }
+
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .philosophy-item {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    transition: var(--transition-normal);
+  }
+
+  .philosophy-item:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(-3px);
+  }
+
+  .phi-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: var(--space-sm);
+  }
+
+  .philosophy-item h4 {
+    margin-bottom: var(--space-sm);
+    color: var(--color-accent-primary);
+  }
+
+  .philosophy-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-md);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    transition: var(--transition-normal);
+    text-decoration: none;
+  }
+
+  .contact-link:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-accent-primary);
+    background: rgba(110, 142, 251, 0.08);
+  }
+
+  @media (max-width: 768px) {
+    .tech-grid,
+    .philosophy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

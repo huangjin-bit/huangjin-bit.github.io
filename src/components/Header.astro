@@ -1,0 +1,222 @@
+---
+import Icon from './Icon.astro';
+
+const navLinks = [
+  { href: '/', label: '首页', icon: 'home' },
+  { href: '/blog', label: '博客', icon: 'pen-line' },
+  { href: '/categories/backend', label: '后端开发', icon: 'server' },
+  { href: '/categories/data-science', label: '数据科学', icon: 'bar-chart' },
+  { href: '/categories/ai', label: 'AI', icon: 'brain' },
+  { href: '/about', label: '关于', icon: 'sparkles' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a href="/" class="logo" aria-label="首页">
+      <span class="logo-icon"><Icon name="star" size={22} color="var(--color-accent-primary)" /></span>
+      <span class="logo-text">星辰代码</span>
+    </a>
+
+    <nav class="main-nav" aria-label="主导航">
+      <ul class="nav-list">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={['nav-link', { active: currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) }]}
+            >
+              <Icon name={link.icon} size={16} />
+              <span class="nav-label">{link.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <button class="mobile-menu-btn" aria-label="打开菜单" id="mobile-menu-btn">
+      <span class="hamburger"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航">
+    <ul class="mobile-nav-list">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={['mobile-nav-link', { active: currentPath === link.href }]}
+          >
+            <Icon name={link.icon} size={18} />
+            <span>{link.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5, 5, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: var(--transition-normal);
+  }
+
+  .logo:hover {
+    color: var(--color-accent-primary);
+  }
+
+  .logo-icon {
+    font-size: 1.6rem;
+    color: var(--color-accent-primary);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-list {
+    display: flex;
+    list-style: none;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition-normal);
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--color-text-primary);
+    background: rgba(110, 142, 251, 0.08);
+  }
+
+  .nav-link.active {
+    color: var(--color-accent-primary);
+    background: rgba(110, 142, 251, 0.12);
+  }
+
+  .nav-icon {
+    font-size: 1rem;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .hamburger,
+  .hamburger::before,
+  .hamburger::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--color-text-primary);
+    border-radius: 2px;
+    transition: var(--transition-normal);
+  }
+
+  .hamburger {
+    position: relative;
+  }
+
+  .hamburger::before,
+  .hamburger::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .hamburger::before { top: -7px; }
+  .hamburger::after { top: 7px; }
+
+  .mobile-nav {
+    display: none;
+    background: rgba(5, 5, 16, 0.95);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-md);
+  }
+
+  .mobile-nav.open {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    transition: var(--transition-normal);
+    text-decoration: none;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link.active {
+    color: var(--color-accent-primary);
+    background: rgba(110, 142, 251, 0.08);
+  }
+
+  @media (max-width: 768px) {
+    .main-nav { display: none; }
+    .mobile-menu-btn { display: block; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const nav = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    nav?.classList.toggle('open');
+  });
+</script>

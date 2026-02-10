@@ -1,0 +1,174 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Icon from '../../components/Icon.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  return [
+    { params: { category: 'backend' } },
+    { params: { category: 'data-science' } },
+    { params: { category: 'ai' } },
+  ];
+}
+
+const { category } = Astro.params;
+
+const categoryMap: Record<string, { label: string; color: string; iconName: string; desc: string }> = {
+  'backend': {
+    label: '后端开发',
+    color: 'var(--color-backend)',
+    iconName: 'server',
+    desc: '深入探索服务端架构、微服务、数据库优化与高并发系统设计',
+  },
+  'data-science': {
+    label: '数据科学',
+    color: 'var(--color-data-science)',
+    iconName: 'bar-chart',
+    desc: '数据分析、可视化、统计建模与数据工程的实战经验分享',
+  },
+  'ai': {
+    label: 'AI',
+    color: 'var(--color-ai)',
+    iconName: 'brain',
+    desc: '机器学习、深度学习、NLP与AI前沿技术的探索与实践',
+  },
+};
+
+const cat = categoryMap[category!] || categoryMap['backend'];
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft && post.data.category === category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={cat.label} description={cat.desc}>
+  <div class="category-page container">
+    <div class="page-header" style={`--cat-color: ${cat.color}`}>
+      <span class="page-icon"><Icon name={cat.iconName} size={48} color={cat.color} /></span>
+      <h1 class="page-title">{cat.label}</h1>
+      <p class="page-desc">{cat.desc}</p>
+      <div class="page-count">{posts.length} 篇文章</div>
+    </div>
+
+    {posts.length === 0 ? (
+      <div class="empty-state">
+        <Icon name="inbox" size={48} color="var(--color-text-muted)" />
+        <p>该分类暂无文章，敬请期待...</p>
+      </div>
+    ) : (
+      <div class="posts-grid">
+        {posts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            heroImage={post.data.heroImage}
+            category={post.data.category}
+            tags={post.data.tags}
+            slug={post.slug}
+          />
+        ))}
+      </div>
+    )}
+
+    <div class="back-nav">
+      <a href="/blog" class="back-link"><Icon name="arrow-left" size={16} /> 返回全部文章</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .category-page {
+    padding: var(--space-2xl) var(--space-lg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-xl);
+    background:
+      url('/images/backgrounds/space-03-milky-way.jpg') center/cover no-repeat;
+    background-blend-mode: overlay;
+    background-color: rgba(5, 5, 16, 0.88);
+    border: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-md);
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: var(--space-sm);
+    color: var(--cat-color);
+  }
+
+  .page-desc {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    margin-bottom: var(--space-md);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-count {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: var(--radius-md);
+    background: rgba(110, 142, 251, 0.08);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: var(--space-3xl);
+    color: var(--color-text-muted);
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-md);
+  }
+
+  .back-nav {
+    margin-top: var(--space-2xl);
+    text-align: center;
+  }
+
+  .back-link {
+    color: var(--color-accent-primary);
+    font-weight: 500;
+    transition: var(--transition-fast);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent-secondary);
+  }
+
+  @media (max-width: 1024px) {
+    .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid { grid-template-columns: 1fr; }
+  }
+</style>

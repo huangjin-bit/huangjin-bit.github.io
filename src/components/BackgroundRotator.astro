@@ -1,0 +1,109 @@
+---
+/**
+ * BackgroundRotator - 根据时间自动轮换宇宙背景图片
+ * 每2小时更换一张背景，13张图片循环使用
+ * 同时支持淡入淡出过渡效果
+ */
+---
+
+<div class="bg-rotator" id="bg-rotator">
+  <div class="bg-layer bg-layer-active" id="bg-layer-a"></div>
+  <div class="bg-layer" id="bg-layer-b"></div>
+</div>
+
+<script>
+  const backgrounds = [
+    '/images/backgrounds/space-01-deep-field.jpg',
+    '/images/backgrounds/space-02-earth-orbit.jpg',
+    '/images/backgrounds/space-03-milky-way.jpg',
+    '/images/backgrounds/space-04-nebula-pillars.jpg',
+    '/images/backgrounds/space-05-galaxy-spiral.jpg',
+    '/images/backgrounds/space-06-aurora.jpg',
+    '/images/backgrounds/space-07-star-cluster.jpg',
+    '/images/backgrounds/space-08-cosmic-dust.jpg',
+    '/images/backgrounds/space-09-supernova.jpg',
+    '/images/backgrounds/space-10-planet-rings.jpg',
+    '/images/backgrounds/space-11-moon-surface.jpg',
+    '/images/backgrounds/space-12-nebula-red.jpg',
+    '/images/backgrounds/space-13-starfield-wide.jpg',
+  ];
+
+  // 根据当前小时计算背景索引（每2小时换一张）
+  function getBackgroundIndex() {
+    const hour = new Date().getHours();
+    return Math.floor(hour / 2) % backgrounds.length;
+  }
+
+  // 初始化背景
+  function initBackground() {
+    const idx = getBackgroundIndex();
+    const layerA = document.getElementById('bg-layer-a');
+    if (layerA) {
+      layerA.style.backgroundImage = `url('${backgrounds[idx]}')`;
+    }
+  }
+
+  // 淡入淡出切换背景
+  function crossfadeBackground() {
+    const idx = getBackgroundIndex();
+    const layerA = document.getElementById('bg-layer-a');
+    const layerB = document.getElementById('bg-layer-b');
+    if (!layerA || !layerB) return;
+
+    const activeLayer = layerA.classList.contains('bg-layer-active') ? layerA : layerB;
+    const inactiveLayer = activeLayer === layerA ? layerB : layerA;
+
+    inactiveLayer.style.backgroundImage = `url('${backgrounds[idx]}')`;
+    inactiveLayer.classList.add('bg-layer-active');
+    activeLayer.classList.remove('bg-layer-active');
+  }
+
+  // 初始化
+  initBackground();
+
+  // 每分钟检查是否需要切换（当小时变化时触发）
+  let lastIndex = getBackgroundIndex();
+  setInterval(() => {
+    const currentIndex = getBackgroundIndex();
+    if (currentIndex !== lastIndex) {
+      crossfadeBackground();
+      lastIndex = currentIndex;
+    }
+  }, 60000);
+</script>
+
+<style>
+  .bg-rotator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+  }
+
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+  }
+
+  .bg-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(5,5,16,0.7) 0%, rgba(5,5,16,0.85) 50%, rgba(5,5,16,0.95) 100%),
+      radial-gradient(ellipse at 30% 20%, rgba(110,142,251,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 60%, rgba(167,119,227,0.04) 0%, transparent 50%);
+  }
+
+  .bg-layer.bg-layer-active {
+    opacity: 1;
+  }
+</style>

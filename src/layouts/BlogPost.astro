@@ -1,0 +1,279 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import type { CollectionEntry } from 'astro:content';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage, category, tags } = Astro.props;
+
+const categoryMap: Record<string, { label: string; color: string; iconName: string }> = {
+  'backend': { label: '后端开发', color: 'var(--color-backend)', iconName: 'server' },
+  'data-science': { label: '数据科学', color: 'var(--color-data-science)', iconName: 'bar-chart' },
+  'ai': { label: 'AI', color: 'var(--color-ai)', iconName: 'brain' },
+};
+
+const cat = categoryMap[category] || categoryMap['backend'];
+const formattedDate = pubDate.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const formattedUpdated = updatedDate?.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description} image={heroImage}>
+  <article class="blog-post">
+    <div class="post-header">
+      <div class="container-narrow">
+        <div class="post-meta-top">
+          <a href={`/categories/${category}`} class="post-category" style={`--cat-color: ${cat.color}`}>
+            <Icon name={cat.iconName} size={14} color={cat.color} />
+            <span>{cat.label}</span>
+          </a>
+          <time datetime={pubDate.toISOString()} class="post-date">
+            <Icon name="calendar" size={14} /> {formattedDate}
+          </time>
+        </div>
+
+        <h1 class="post-title">{title}</h1>
+        <p class="post-description">{description}</p>
+
+        {tags && tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((tag) => (
+              <span class="tag">#{tag}</span>
+            ))}
+          </div>
+        )}
+
+        {updatedDate && (
+          <p class="post-updated">
+            <Icon name="refresh" size={14} /> 最后更新于 {formattedUpdated}
+          </p>
+        )}
+      </div>
+    </div>
+
+    {heroImage && (
+      <div class="post-hero-image container-narrow">
+        <img src={heroImage} alt={title} />
+      </div>
+    )}
+
+    <div class="post-content container-narrow">
+      <slot />
+    </div>
+
+    <div class="post-footer container-narrow">
+      <div class="post-nav">
+        <a href="/blog" class="back-link"><Icon name="arrow-left" size={16} /> 返回文章列表</a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-post {
+    padding-top: var(--space-2xl);
+    position: relative;
+    z-index: 1;
+  }
+
+  .post-header {
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-xl);
+  }
+
+  .post-meta-top {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .post-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-md);
+    background: rgba(110, 142, 251, 0.08);
+    border: 1px solid var(--cat-color);
+    color: var(--cat-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+  }
+
+  .post-category:hover {
+    background: rgba(110, 142, 251, 0.15);
+  }
+
+  .post-date {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: var(--space-md);
+    background: linear-gradient(135deg, var(--color-text-primary), var(--color-accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .post-description {
+    font-size: 1.15rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: var(--space-sm);
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    color: var(--color-accent-primary);
+    background: rgba(110, 142, 251, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .post-updated {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .post-hero-image {
+    margin-bottom: var(--space-xl);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .post-hero-image img {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    object-fit: cover;
+  }
+
+  /* Markdown content styling */
+  .post-content {
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.8rem;
+    margin-top: var(--space-2xl);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-content :global(h3) {
+    font-size: 1.4rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-sm);
+  }
+
+  .post-content :global(p) {
+    margin-bottom: var(--space-md);
+    color: var(--color-text-secondary);
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-xl);
+    color: var(--color-text-secondary);
+  }
+
+  .post-content :global(li) {
+    margin-bottom: var(--space-xs);
+  }
+
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--color-accent-primary);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-lg) 0;
+    background: rgba(110, 142, 251, 0.05);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-style: italic;
+    color: var(--color-text-secondary);
+  }
+
+  .post-content :global(a) {
+    color: var(--color-accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .post-content :global(img) {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    margin: var(--space-lg) 0;
+  }
+
+  .post-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-lg) 0;
+  }
+
+  .post-content :global(th),
+  .post-content :global(td) {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    text-align: left;
+  }
+
+  .post-content :global(th) {
+    background: var(--color-bg-card);
+    font-weight: 600;
+  }
+
+  .post-footer {
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+    padding-bottom: var(--space-2xl);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-accent-primary);
+    font-weight: 500;
+    transition: var(--transition-fast);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent-secondary);
+    transform: translateX(-3px);
+  }
+
+  @media (max-width: 768px) {
+    .post-title {
+      font-size: 1.8rem;
+    }
+  }
+</style>
