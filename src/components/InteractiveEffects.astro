@@ -1,0 +1,390 @@
+---
+/**
+ * InteractiveEffects - 全局交互效果和隐藏彩蛋
+ * 
+ * 彩蛋列表（融入页面，不明显）：
+ * 1. 点击页面空白处生成星星涟漪效果
+ * 2. Logo 连续点击5次 → 触发流星雨
+ * 3. 鼠标悬停卡片时产生微光粒子追踪
+ * 4. Konami Code (↑↑↓↓←→←→BA) → 页面进入超级星空模式
+ * 5. Hero区域的轨道圆环可以拖动
+ * 6. 双击页面标题 → 文字短暂变成星座连线效果
+ * 7. 鼠标长时间不动(15s) → 出现一颗缓慢飘过的彗星
+ */
+---
+
+<canvas id="click-canvas" class="click-canvas"></canvas>
+
+<style>
+  .click-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .meteor-shower .shooting-star-easter {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 6px 2px rgba(110, 142, 251, 0.6);
+    z-index: 9998;
+    pointer-events: none;
+    animation: meteor-fall linear forwards;
+  }
+
+  @keyframes meteor-fall {
+    0% { opacity: 1; transform: translate(0, 0) rotate(-35deg); }
+    70% { opacity: 1; }
+    100% { opacity: 0; transform: translate(300px, 600px) rotate(-35deg); }
+  }
+
+  .comet {
+    position: fixed;
+    z-index: 9998;
+    pointer-events: none;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #fff 0%, rgba(167,119,227,0.8) 40%, transparent 70%);
+    border-radius: 50%;
+    box-shadow: 0 0 12px 4px rgba(110, 142, 251, 0.4), 0 0 30px 8px rgba(167,119,227,0.2);
+    animation: comet-drift 12s linear forwards;
+  }
+
+  .comet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: 120px;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(to left, rgba(255,255,255,0.6), rgba(110,142,251,0.3), transparent);
+    border-radius: 1px;
+  }
+
+  @keyframes comet-drift {
+    0% { top: -10px; left: 110%; opacity: 0; }
+    5% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 70%; left: -15%; opacity: 0; }
+  }
+
+  .sparkle-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    animation: sparkle-fade 0.8s ease-out forwards;
+  }
+
+  @keyframes sparkle-fade {
+    0% { opacity: 1; transform: scale(1) translate(0, 0); }
+    100% { opacity: 0; transform: scale(0) translate(var(--dx), var(--dy)); }
+  }
+
+  .super-starfield-mode body {
+    animation: hue-rotate-subtle 10s linear infinite;
+  }
+
+  @keyframes hue-rotate-subtle {
+    0% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(15deg); }
+    100% { filter: hue-rotate(0deg); }
+  }
+
+  .title-constellation {
+    background: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    -webkit-text-stroke: 1px rgba(110, 142, 251, 0.8);
+    transition: all 0.5s ease;
+  }
+
+  .dragging {
+    cursor: grabbing !important;
+    z-index: 100;
+  }
+</style>
+
+<script>
+  // ============================================
+  // 1. 点击星星涟漪 - 点击空白处产生星星扩散
+  // ============================================
+  const canvas = document.getElementById('click-canvas') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const ripples: Array<{x: number; y: number; r: number; alpha: number; particles: Array<{angle: number; dist: number; size: number}>}> = [];
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    // 只在非交互元素上触发
+    if (target.closest('a, button, input, textarea, select')) return;
+
+    const particleCount = 6 + Math.floor(Math.random() * 4);
+    const particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        angle: (Math.PI * 2 * i) / particleCount + Math.random() * 0.3,
+        dist: 0,
+        size: 1 + Math.random() * 2,
+      });
+    }
+    ripples.push({ x: e.clientX, y: e.clientY, r: 0, alpha: 1, particles });
+  });
+
+  function animateRipples() {
+    if (!ctx || !canvas) { requestAnimationFrame(animateRipples); return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const rip = ripples[i];
+      rip.r += 1.5;
+      rip.alpha -= 0.02;
+
+      if (rip.alpha <= 0) { ripples.splice(i, 1); continue; }
+
+      // 画扩散的小星星
+      rip.particles.forEach((p) => {
+        p.dist += 2;
+        const px = rip.x + Math.cos(p.angle) * p.dist;
+        const py = rip.y + Math.sin(p.angle) * p.dist;
+
+        ctx.save();
+        ctx.globalAlpha = rip.alpha;
+        ctx.fillStyle = `hsl(${220 + Math.random() * 40}, 80%, 75%)`;
+        ctx.beginPath();
+        // 画四角星形
+        const s = p.size;
+        ctx.moveTo(px, py - s * 2);
+        ctx.lineTo(px + s * 0.5, py - s * 0.5);
+        ctx.lineTo(px + s * 2, py);
+        ctx.lineTo(px + s * 0.5, py + s * 0.5);
+        ctx.lineTo(px, py + s * 2);
+        ctx.lineTo(px - s * 0.5, py + s * 0.5);
+        ctx.lineTo(px - s * 2, py);
+        ctx.lineTo(px - s * 0.5, py - s * 0.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    requestAnimationFrame(animateRipples);
+  }
+  animateRipples();
+
+  // ============================================
+  // 2. Logo 连续点击5次 → 流星雨
+  // ============================================
+  let logoClickCount = 0;
+  let logoClickTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const logo = document.querySelector('.logo');
+  logo?.addEventListener('click', (e) => {
+    logoClickCount++;
+    if (logoClickTimer) clearTimeout(logoClickTimer);
+    logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1500);
+
+    if (logoClickCount >= 5) {
+      e.preventDefault();
+      logoClickCount = 0;
+      triggerMeteorShower();
+    }
+  });
+
+  function triggerMeteorShower() {
+    document.body.classList.add('meteor-shower');
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => {
+        const meteor = document.createElement('div');
+        meteor.className = 'shooting-star-easter';
+        meteor.style.left = Math.random() * 100 + '%';
+        meteor.style.top = Math.random() * 30 + '%';
+        meteor.style.animationDuration = (1 + Math.random() * 2) + 's';
+        document.body.appendChild(meteor);
+        setTimeout(() => meteor.remove(), 3000);
+      }, i * 150);
+    }
+    setTimeout(() => document.body.classList.remove('meteor-shower'), 5000);
+  }
+
+  // ============================================
+  // 3. 卡片悬停微光粒子追踪
+  // ============================================
+  document.querySelectorAll('.post-card, .category-card, .philosophy-item, .tech-card').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const ev = e as MouseEvent;
+      if (Math.random() > 0.3) return; // 30%概率生成粒子
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle-particle';
+      const dx = (Math.random() - 0.5) * 40;
+      const dy = (Math.random() - 0.5) * 40 - 15;
+      sparkle.style.setProperty('--dx', dx + 'px');
+      sparkle.style.setProperty('--dy', dy + 'px');
+      sparkle.style.left = ev.clientX + 'px';
+      sparkle.style.top = ev.clientY + 'px';
+      const colors = ['#6e8efb', '#a777e3', '#4fc3f7', '#fff'];
+      sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      sparkle.style.boxShadow = `0 0 4px ${sparkle.style.background}`;
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 800);
+    });
+  });
+
+  // ============================================
+  // 4. Konami Code → 超级星空模式
+  // ============================================
+  const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIndex = 0;
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === konamiSequence[konamiIndex]) {
+      konamiIndex++;
+      if (konamiIndex === konamiSequence.length) {
+        konamiIndex = 0;
+        activateSuperStarfield();
+      }
+    } else {
+      konamiIndex = 0;
+    }
+  });
+
+  function activateSuperStarfield() {
+    document.documentElement.classList.toggle('super-starfield-mode');
+    // 生成一波大量星星
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const star = document.createElement('div');
+        star.className = 'sparkle-particle';
+        star.style.left = Math.random() * window.innerWidth + 'px';
+        star.style.top = Math.random() * window.innerHeight + 'px';
+        star.style.setProperty('--dx', (Math.random() - 0.5) * 100 + 'px');
+        star.style.setProperty('--dy', (Math.random() - 0.5) * 100 + 'px');
+        star.style.background = '#fff';
+        star.style.width = (2 + Math.random() * 4) + 'px';
+        star.style.height = star.style.width;
+        star.style.boxShadow = '0 0 8px rgba(110,142,251,0.8)';
+        star.style.animationDuration = (0.5 + Math.random() * 1.5) + 's';
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 2000);
+      }, i * 30);
+    }
+  }
+
+  // ============================================
+  // 5. Hero 轨道圆环可拖动
+  // ============================================
+  document.querySelectorAll('.orbit-dot').forEach((dot) => {
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let origX = 0, origY = 0;
+    const el = dot as HTMLElement;
+
+    el.style.cursor = 'grab';
+    el.style.userSelect = 'none';
+
+    el.addEventListener('mousedown', (e) => {
+      const ev = e as MouseEvent;
+      isDragging = true;
+      el.classList.add('dragging');
+      startX = ev.clientX;
+      startY = ev.clientY;
+      const rect = el.getBoundingClientRect();
+      origX = rect.left;
+      origY = rect.top;
+      ev.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const ev = e as MouseEvent;
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+      el.style.animation = 'none';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      el.classList.remove('dragging');
+      // 弹回原位
+      el.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      el.style.transform = 'translate(0, 0)';
+      setTimeout(() => {
+        el.style.transition = '';
+        el.style.animation = '';
+      }, 800);
+    });
+  });
+
+  // ============================================
+  // 6. 双击标题 → 星座连线效果
+  // ============================================
+  document.querySelectorAll('.hero-title, .section-title, .page-title, .about-title, .post-title').forEach((title) => {
+    title.addEventListener('dblclick', () => {
+      const el = title as HTMLElement;
+      el.classList.add('title-constellation');
+      setTimeout(() => el.classList.remove('title-constellation'), 2000);
+    });
+  });
+
+  // ============================================
+  // 7. 鼠标静止15秒 → 彗星飘过
+  // ============================================
+  let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function resetIdleTimer() {
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(spawnComet, 15000);
+  }
+
+  function spawnComet() {
+    const comet = document.createElement('div');
+    comet.className = 'comet';
+    document.body.appendChild(comet);
+    setTimeout(() => comet.remove(), 12000);
+  }
+
+  document.addEventListener('mousemove', resetIdleTimer);
+  document.addEventListener('keydown', resetIdleTimer);
+  document.addEventListener('scroll', resetIdleTimer);
+  resetIdleTimer();
+
+  // ============================================
+  // 8. 滚动视差 - 背景微移
+  // ============================================
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const bgRotator = document.getElementById('bg-rotator');
+        if (bgRotator) {
+          bgRotator.style.transform = `translateY(${scrollY * 0.15}px)`;
+        }
+        // 星星也微微视差
+        const particles = document.querySelector('.particle-bg') as HTMLElement;
+        if (particles) {
+          particles.style.transform = `translateY(${scrollY * 0.05}px)`;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+</script>
